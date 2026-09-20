@@ -10,6 +10,8 @@ description: >
   revision, or says things like "원고 평가해줘", "논문 초안 피드백", "투고 전에 봐줘",
   "학생 논문 검토", "draft 개선", "manuscript 개선", "pre-submission check",
   "is this ready to submit", or drops a draft paper and asks how to make it better.
+  Outputs two Markdown files next to the manuscript: an English evaluation report
+  and a student-facing summary (Korean by default, telegraphic style).
   Do NOT use for writing a formal referee report for a journal editor (use
   journal-peer-review) or for thesis/defense evaluation (use
   thesis-committee-evaluator).
@@ -25,9 +27,17 @@ The mindset matters: this is *improvement guidance*, not gatekeeping. Every issu
 raise must come with a concrete action the author can take. The output of this skill
 is a roadmap for revision, not a verdict.
 
-Write the report in the language the user is communicating in (e.g., Korean if the
-user writes in Korean), but keep the priority tags `[CRITICAL]/[MAJOR]/[MINOR]` and
-technical terms in English.
+This skill produces **two deliverables**, both saved as Markdown files (see
+"Output format"):
+
+1. **Evaluation report** — always written in **English**, regardless of the language
+   the user is communicating in.
+2. **Student summary** — a short hand-off version for the author. Written in
+   **Korean** unless the user explicitly specifies another language, in the
+   telegraphic style described under "Student summary style".
+
+In both files keep the priority tags `[CRITICAL]/[MAJOR]/[MINOR]` and technical terms
+in English. Chat replies to the user follow the user's own language.
 
 ## Detailed criteria
 
@@ -144,7 +154,19 @@ next, and feel motivated rather than demoralized?
 
 ## Output format
 
-Produce a single Markdown report:
+Always produce **both** files below and save them next to the manuscript (same folder
+as the input file). Do not merely print them in chat; after saving, give the user a
+brief summary of the verdict and the file paths.
+
+| Deliverable | File name | Language |
+|---|---|---|
+| Evaluation report | `<manuscript-name>_evaluation.md` | English (always) |
+| Student summary | `<manuscript-name>_evaluation_student_summary.md` | Korean by default; another language only if the user specifies one |
+
+If the user asks to regenerate or translate one of the files, overwrite that file
+only and leave the other untouched.
+
+### 1. Evaluation report (English)
 
 ```markdown
 # Manuscript Evaluation: [short title]
@@ -166,8 +188,60 @@ Produce a single Markdown report:
 [Each: `[TAG] <issue>. <action>.` with section/figure references]
 
 ## Decision
-[Recommendation + 1-2 sentence justification tied to the findings]
+[Recommendation + 1-2 sentence justification tied to the findings,
+ followed by a recommended revision order]
 ```
 
-If the user asks for the report as a file, save it next to the manuscript as
-`<manuscript-name>_evaluation.md`.
+Start the file with a short metadata list (manuscript file name, evaluation framework,
+and any caveats such as "venue page limit/template not verified"). If numbers in the
+manuscript were cross-checked, say so. Number the Major/Minor items continuously
+(1, 2, 3, …) so the student summary can refer to them as `#n`.
+
+### 2. Student summary (Korean by default)
+
+A one-page hand-off for the student, derived from the evaluation report. It must not
+introduce findings that are absent from the report; item numbers (`#n`) must match
+the report.
+
+```markdown
+# <Venue/Year> 원고 피드백 요약 (학생 전달용)
+
+**논문**: [title]
+**상세 평가**: `<manuscript-name>_evaluation.md` (번호는 상세 평가서의 항목 번호와 동일)
+
+## 한 줄 총평
+[Verdict (Major Revision etc.), the main reason, and expected effort — as 3-4 bullets]
+
+## 잘한 점 (유지할 것)
+[Strengths, one bullet each]
+
+## 반드시 고칠 것 (Major, 우선순위 순)
+[Numbered; each item: bold topic + (#n), then sub-bullets for the problem and the action]
+
+## 다듬을 것 (Minor)
+[One bullet per item with (#n)]
+
+## 수정 일정 (제안)
+[Table: week | tasks — sized to the actual amount of work]
+
+## 다음 미팅 논의 사항
+[Decisions the student and advisor must make together]
+```
+
+#### Student summary style (telegraphic / 개조식)
+
+Write every sentence in the telegraphic style — noun-ending or short "~함/~됨/~임"
+and "~할 것" endings — instead of polite or imperative sentence endings.
+
+- Actions and requests: end with **"~할 것"** (e.g., "그래프 작성할 것",
+  "차단주파수를 명시할 것").
+- Observations and facts: end with **"~함", "~됨", "~임"** or a noun (e.g.,
+  "서사가 일관됨", "재현성이 높음", "비교가 불공정할 수 있음").
+- Do **not** use "~하세요", "~합니다", "~입니다", "~좋습니다", "~바랍니다",
+  "~해 주세요" or similar polite/imperative endings anywhere in the file.
+- Prefer short bullets over long sentences; split a sentence rather than chaining
+  clauses.
+- If the user requests another language, apply the same terse, list-style tone in
+  that language.
+
+Before saving, scan the summary once for forbidden endings and fix any that remain.
